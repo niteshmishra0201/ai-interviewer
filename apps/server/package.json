@@ -1,0 +1,21 @@
+{
+  "name": "@ai-interviewer/server",
+  "version": "0.0.1",
+  "private": true,
+
+  "scripts": {
+    "dev": "bun run --watch src/index.ts",
+    "build": "bun build src/index.ts --outdir dist --target bun",
+    "start": "bun run dist/index.js",
+    "lint": "eslint src/**/*.ts"
+  },
+
+  "dependencies": {
+    "hono": "latest",
+    "@ai-interviewer/types": "*"
+  },
+
+  "devDependencies": {
+    "bun-types": "latest"
+  }
+}

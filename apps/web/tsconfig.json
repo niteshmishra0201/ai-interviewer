@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  
+  "extends": "../../packages/types/tsconfig.json",
+  // "extends" means INHERIT all settings from the base config
+  // ../../ goes up two levels from apps/web to reach the root
+  // Then into packages/types/tsconfig.json
+  // Whatever is in the base config applies here automatically
+  // We only need to ADD or OVERRIDE settings below
+
+  "compilerOptions": {
+    "types": ["bun-types"],
+
+    "target": "ES2017",
+    // Keep same target as base
+
+    "lib": ["dom", "dom.iterable", "ES2017"],
+    // OVERRIDE the lib from base — frontend needs extra libraries:
+    // "dom"          → browser APIs like document, window, localStorage
+    // "dom.iterable" → allows iterating over DOM collections (NodeList, etc.)
+    // "ES2017"       → keep the JavaScript standard library
+
+    "module": "ESNext",
+    // OVERRIDE from CommonJS to ESNext for frontend
+    // ESNext means modern import/export syntax
+    // Next.js handles the bundling so we use modern modules
+
+    "moduleResolution": "Bundler",
+    // Same as base — Next.js uses a bundler (webpack/turbopack)
+
+    "jsx": "preserve",
+    // "preserve" means keep JSX as-is in output
+    // Next.js handles JSX transformation itself, so we don't touch it
+    // Without this, TypeScript wouldn't understand <div> syntax
+
+    "paths": {
+      "@ai-interviewer/types": ["../../packages/types/src/index.ts"]
+      // This is the CRUCIAL line that connects packages/types to our frontend
+      // When we write:
+      //   import { User } from "@ai-interviewer/types"
+      // TypeScript resolves it to:
+      //   ../../packages/types/src/index.ts
+      // Without this, TypeScript would say "cannot find module @ai-interviewer/types"
+    },
+
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+
+    "noEmit": true,
+    // "noEmit: true" — TypeScript checks your code but does NOT produce output files
+    // Next.js handles the actual compilation, TypeScript is just the type checker
+    // This is the correct setting for Next.js projects
+
+    "incremental": true,
+    // Saves information between compilations
+    // Makes subsequent TypeScript checks faster
+    // TypeScript remembers what it already checked
+
+    "isolatedModules": true
+    // Each file is treated as an independent module
+    // Required by Next.js — makes builds faster and compatible
+    // with tools that process one file at a time (like Babel, SWC)
+  },
+
+  "include": [
+    "**/*.ts",
+    "**/*.tsx"
+    // Check ALL TypeScript files inside apps/web
+    // **/*.ts  → any .ts file in any subfolder
+    // **/*.tsx → any .tsx file (TypeScript with JSX) in any subfolder
+  ],
+
+  "exclude": [
+    "node_modules"
+    // Do NOT type-check files inside node_modules
+    // That's third party code, not ours
+  ]
+}

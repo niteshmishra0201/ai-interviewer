@@ -1,0 +1,56 @@
+
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+# These are GENERATED files — compiled from your source code
+# No point storing generated files in Git, they can always be regenerated
+.next/
+dist/
+build/
+out/
+
+# Environment variables
+# CRITICAL — never commit .env files
+# They contain API keys, database passwords, secrets
+# If pushed to GitHub, anyone can steal your keys
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Turborepo cache
+# Turborepo stores build cache here — local only, not needed in Git
+.turbo/
+
+# Bun
+# Bun's binary lockfile — some teams commit this, some don't
+# We'll exclude it to avoid Windows/Mac/Linux compatibility issues
+bun.lockb
+
+# OS files
+# These are files your operating system creates automatically
+# They have nothing to do with your project
+.DS_Store        
+Thumbs.db        
+Desktop.ini      
+
+# VS Code
+# Editor settings are personal — don't force your settings on others
+# Exception: .vscode/extensions.json is okay to share (recommended extensions)
+.vscode/*
+!.vscode/extensions.json
+
+# Logs
+# Log files generated during development — not source code
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# TypeScript
+# TypeScript build info cache — local only
+*.tsbuildinfo
+next-env.d.ts

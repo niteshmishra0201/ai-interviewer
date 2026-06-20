@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+
+  "extends": "../../packages/types/tsconfig.json",
+  // Inherit base config from packages/types
+  // Same pattern as apps/web — one source of truth for common settings
+
+  "compilerOptions": {
+    "rootDir": "./src",
+    "target": "ES2017",
+
+    "lib": ["ES2017"],
+    // Backend does NOT need DOM libraries
+    // No window, no document — this is a server, not a browser
+
+    "module": "ESNext",
+    // Modern module syntax for Bun
+
+    "moduleResolution": "Bundler",
+    // Bun acts as the bundler for our server
+
+    "types": ["bun-types"],
+    // Include Bun's type definitions
+    // This gives us access to Bun.serve(), Bun.file(), etc.
+
+    "paths": {
+      "@ai-interviewer/types": ["../../packages/types/src/index.ts"]
+      // Same path mapping as web — so server can also import
+      // shared types with: import { User } from "@ai-interviewer/types"
+    },
+
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+
+    "outDir": "./dist"
+    // Where compiled JavaScript files go when you run "bun build"
+    // We don't need "noEmit: true" here unlike the frontend
+    // because the backend DOES need to produce output files for production
+  },
+
+  "include": [
+    "src/**/*.ts"
+    // Only check TypeScript files inside our src/ folder
+  ],
+
+  "exclude": [
+    "node_modules",
+    "dist"
+    // Ignore node_modules AND dist folder
+    // dist contains compiled output — no need to type-check it
+  ]
+}
