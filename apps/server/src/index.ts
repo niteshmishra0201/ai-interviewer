@@ -2,6 +2,7 @@ import { Hono } from "hono"
 import { logger } from "hono/logger"
 import { cors } from "hono/cors"
 import { prisma } from "./lib/prisma"
+import authRouter from "./routes/auth"
 
 const app = new Hono()
 
@@ -9,6 +10,8 @@ app.use("*", logger())
 app.use("*", cors({
   origin: "http://localhost:3000",
 }))
+
+app.route("/api/auth", authRouter)
 
 app.get("/", (c) => {
   return c.json({

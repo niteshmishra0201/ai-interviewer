@@ -11,10 +11,15 @@
   "dependencies": {
     "@ai-interviewer/types": "*",
     "@prisma/client": "5",
+    "bcryptjs": "^3.0.3",
     "hono": "latest",
-    "prisma": "5"
+    "jsonwebtoken": "^9.0.3",
+    "prisma": "5",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^3.0.0",
+    "@types/jsonwebtoken": "^9.0.10",
     "bun-types": "latest"
   }
 }
