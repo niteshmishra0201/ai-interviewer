@@ -2,6 +2,7 @@ import { Hono } from "hono"
 import { prisma } from "../lib/prisma"
 import { hashPassword, comparePassword, generateToken } from "../utils/auth"
 import { registerSchema, loginSchema } from "../validators/auth.validator"
+import { authMiddleware } from "../middleware/auth.middleware"
 
 const authRouter = new Hono()
 
@@ -104,24 +105,11 @@ authRouter.post("/login", async (c) => {
   }
 })
 
-authRouter.get("/me", async (c) => {
-  const authHeader = c.req.header("Authorization")
-
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return c.json({ error: "No token provided" }, 401)
-  }
-
-  const token = authHeader.split(" ")[1]
-
-  const { verifyToken } = await import("../utils/auth")
-  const payload = verifyToken(token)
-
-  if (!payload) {
-    return c.json({ error: "Invalid or expired token" }, 401)
-  }
+authRouter.get("/me", authMiddleware, async (c) => {
+  const userId = c.get("userId")
 
   const user = await prisma.user.findUnique({
-    where: { id: payload.userId },
+    where: { id: userId },
     select: {
       id: true,
       name: true,
