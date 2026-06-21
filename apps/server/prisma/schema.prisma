@@ -1,0 +1,119 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String?
+  avatarUrl String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  resumes           Resume[]
+  interviewSessions InterviewSession[]
+  skillProgress     SkillProgress[]
+}
+
+model Resume {
+  id            String   @id @default(cuid())
+  userId        String
+  fileName      String
+  fileUrl       String
+  extractedData Json?
+  createdAt     DateTime @default(now())
+
+  user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  interviewSessions InterviewSession[]
+}
+
+model InterviewSession {
+  id              String          @id @default(cuid())
+  userId          String
+  resumeId        String?
+  status          InterviewStatus @default(IDLE)
+  currentRound    InterviewRound  @default(HR)
+  difficultyLevel DifficultyLevel @default(MEDIUM)
+  overallScore    Float?
+  startedAt       DateTime        @default(now())
+  completedAt     DateTime?
+
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resume    Resume?    @relation(fields: [resumeId], references: [id], onDelete: SetNull)
+  questions Question[]
+}
+
+model Question {
+  id                 String          @id @default(cuid())
+  interviewSessionId String
+  questionText       String
+  round              InterviewRound
+  difficulty         DifficultyLevel
+  expectedThemes     String[]
+  orderIndex         Int
+  createdAt          DateTime        @default(now())
+
+  interviewSession InterviewSession @relation(fields: [interviewSessionId], references: [id], onDelete: Cascade)
+  answer           Answer?
+}
+
+model Answer {
+  id            String   @id @default(cuid())
+  questionId    String   @unique
+  answerText    String
+  answeredVoice Boolean  @default(false)
+  createdAt     DateTime @default(now())
+
+  question   Question    @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  evaluation Evaluation?
+}
+
+model Evaluation {
+  id               String   @id @default(cuid())
+  answerId         String   @unique
+  overallScore     Float
+  clarityScore     Float
+  correctnessScore Float
+  strengths        String[]
+  weaknesses       String[]
+  betterAnswerHint String
+  createdAt        DateTime @default(now())
+
+  answer Answer @relation(fields: [answerId], references: [id], onDelete: Cascade)
+}
+
+model SkillProgress {
+  id         String   @id @default(cuid())
+  userId     String
+  skill      String
+  score      Float
+  recordedAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum InterviewStatus {
+  IDLE
+  IN_PROGRESS
+  COMPLETED
+  ABANDONED
+}
+
+enum InterviewRound {
+  HR
+  TECHNICAL
+  SYSTEM_DESIGN
+  BEHAVIORAL
+}
+
+enum DifficultyLevel {
+  EASY
+  MEDIUM
+  HARD
+}
